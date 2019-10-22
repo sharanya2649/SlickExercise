@@ -26,18 +26,18 @@ object EmployeeDetails extends App {
     def depLocation=column[String]("DEP_LOCATION")
 
     def * = (id,depName,depLocation)
-    
+
     }
   val department= TableQuery(Department)
 
   try{
 
-    val res2: Unit =Await.result(DatabaseConnection.db.run(DBIO.seq(
-      employee.schema.create
-    )), Duration.Inf)
+//    val res2: Unit =Await.result(DatabaseConnection.db.run(DBIO.seq(
+//      employee.schema.create
+//    )), Duration.Inf)
 
     val insert = {
-      employee.map(e => (e.id,e.name,e.age,e.depId)) += (1, "john", 26, 3)
+      employee.map(e => (e.id,e.name,e.age,e.depId)) ++= Seq((1, "john", 26, 3),(2, "sony", 30, 4),(3, "peter", 40, 2),(4, "marvel", 22, 3),(5, "kim", 50, 4))
     }
 
     val update = {
@@ -51,8 +51,8 @@ object EmployeeDetails extends App {
     }
 
     val insertResult = Await.result(DatabaseConnection.db.run(insert), Duration.Inf)
-    val updateResult = Await.result(DatabaseConnection.db.run(update), Duration.Inf)
-    val deleteResult = Await.result(DatabaseConnection.db.run(delete), Duration.Inf)
+//    val updateResult = Await.result(DatabaseConnection.db.run(update), Duration.Inf)
+//    val deleteResult = Await.result(DatabaseConnection.db.run(delete), Duration.Inf)
   }finally DatabaseConnection.db.close
 
 
