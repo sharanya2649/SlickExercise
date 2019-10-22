@@ -26,8 +26,7 @@ object EmployeeDetails extends App {
     def depLocation=column[String]("DEP_LOCATION")
 
     def * = (id,depName,depLocation)
-
-//    def employeeFk = foreignKey("Emp_FK",id,employee)(_.id)
+    
     }
   val department= TableQuery(Department)
 
