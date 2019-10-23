@@ -17,4 +17,9 @@ class EmployeeDetailsTest extends FunSuite{
     val retrieveOutput= Await.result(DatabaseConnection.db.run(employee.slick),Duration.Inf)
     assert(retrieveInput===retrieveOutput)
   }
+  test("delete test"){
+    val deleteInput = Await.result(DatabaseConnection.db.run(employee.delete), Duration.Inf)
+    val deleteOutput = Await.result(DatabaseConnection.db.run(employee.deleteSql), Duration.Inf)
+    assert(deleteInput===deleteOutput)
+  }
 }
