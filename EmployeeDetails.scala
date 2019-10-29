@@ -3,132 +3,92 @@ import slick.dbio.{DBIOAction, Effect}
 import slick.jdbc.MySQLProfile
 import slick.jdbc.MySQLProfile.api._
 import slick.lifted.QueryBase
-import slick.sql.FixedSqlAction
+import slick.sql.{FixedSqlAction, FixedSqlStreamingAction}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
-class EmployeeDetails{
+import slick.jdbc.MySQLProfile.api._
 
-    case class Employee(tag: Tag) extends Table[(Int, String, Int, Int)](tag, "EMPLOYEE") {
-      def id = column[Int]("ID")
+class EmployeeDetails {
 
-      def name = column[String]("NAME")
+    case class Employee(tag: Tag) extends Table[EmployeeData](tag, "EMPLOYEE") {
+      def id = column[Int]("id")
 
-      def age = column[Int]("AGE")
+      def name = column[String]("name")
 
-      def depId = column[Int]("DEP_ID")
+      def age = column[Int]("age")
 
-      def * = (id, name, age, depId)
+      def depId = column[Int]("dep_id")
+
+      def * = (id, name, age, depId) <> (EmployeeData.tupled, EmployeeData.unapply)
     }
+  case class EmployeeData(id: Int, name: String,age: Int, depId: Int)
 
     val employee = TableQuery(Employee)
 
-    case class Department(tag: Tag) extends Table[(Int, String, String)](tag, "DEPARTMENT") {
-      def id = column[Int]("ID")
+    case class Department(tag: Tag) extends Table[DepartmentData](tag, "DEPARTMENT") {
+      def id = column[Int]("id")
 
-      def depName = column[String]("DEP_NAME")
+      def depName = column[String]("dep_name")
 
-      def depLocation = column[String]("DEP_LOCATION")
+      def depLocation = column[String]("dep_location")
 
-      def * = (id, depName, depLocation)
+      def * = (id, depName, depLocation) <> (DepartmentData.tupled,DepartmentData.unapply)
 
     }
-
+    case class DepartmentData(id:Int,depName:String,depLocation:String)
     val department = TableQuery(Department)
 
-    //    try {
 
-    //    val employeeSchema: Unit =Await.result(DatabaseConnection.db.run(DBIO.seq(
-    //      employee.schema.create
-    //    )), Duration.Inf)
+//        val employeeSchema: Unit =Await.result(DatabaseConnection.db.run(DBIO.seq(
+//          employee.schema.create
+//        )), Duration.Inf)
+//
+//          val departmentSchema: Unit = Await.result(DatabaseConnection.db.run(DBIO.seq(
+//            department.schema.create
+//          )), Duration.Inf)
 
-    //      val departmentSchema: Unit = Await.result(DatabaseConnection.db.run(DBIO.seq(
-    //        department.schema.create
-    //      )), Duration.Inf)
-
-    val insertEmployee = {
-      employee.map(e => (e.id, e.name, e.age, e.depId)) ++= Seq((1, "john", 26, 3), (2, "sony", 30, 4), (3, "peter", 40, 2), (4, "marvel", 22, 3), (5, "kim", 50, 4))
+    def insertEmployee(emp:EmployeeData) = {
+      employee.map(e => (e.id, e.name, e.age, e.depId)) += (emp.id,emp.name,emp.age,emp.depId)
     }
 
-    val update = {
-      employee.filter(_.name === "john")
+    def update(name:String,modifyName:String,age:Int) = {
+      employee.filter(_.name === name)
         .map(p => (p.name, p.age))
-        .update(("Johnn", 32))
+        .update((modifyName, age))
     }
-    val updateSql = {
-      sqlu"""
-            update EMPLOYEE set NAME='Johnn', AGE=38 where NAME='john'
-          """
-    }
-    val delete = {
-      employee.filter(e => e.name === "john")
+//    def updateSql = {
+//      sqlu"""
+//            update EMPLOYEE set NAME='johnn', AGE=38 where NAME='Johnn'
+//          """
+//    }
+    def delete(deleteName:String) = {
+      employee.filter(e => e.name === deleteName)
         .delete
     }
+//    def deleteSql= {
+//      sqlu"""
+//             delete EMPLOYEE where NAME='sony'
+//             """
+//    }
 
-    val insertDepartment = {
-      department.map(d => (d.id, d.depName, d.depLocation)) ++= Seq((5, "IT", "hyderabad"), (2, "IT", "bangalore"), (3, "IT", "chennai"), (1, "HR", "hyderabad"), (4, "HR", "chennai"))
-    }
+//    def insertDepartment() = {
+//      department.map(d => (d.id, d.depName, d.depLocation)) ++= Seq((5, "IT", "hyderabad"), (2, "IT", "bangalore"), (3, "IT", "chennai"), (1, "HR", "hyderabad"), (4, "HR", "chennai"))
+//    }
 
-  val sql =
-    sql"""
-            select *
-            from EMPLOYEE E
-            where E.ID in (select ID
-                           from DEPARTMENT
-                           where DEP_LOCATION = 'hyderabad')
-          """.as[(Int, String, Int, Int)]
-  val slick = {
-    val address_ids = department.filter(_.depLocation=== "hyderabad").map(_.id)
+//  def sql =
+//    sql"""
+//            select *
+//            from EMPLOYEE E
+//            where E.ID in (select ID
+//                           from DEPARTMENT
+//                           where DEP_LOCATION = 'hyderabad')
+//          """.as[(Int, String, Int, Int)]
+
+  def slick(city:String) = {
+    val address_ids = department.filter(_.depLocation=== city).map(_.id)
     employee.filter(_.id in address_ids).result
   }
-
-    //    val insertEmployeeResult = Await.result(DatabaseConnection.db.run(insertEmployee), Duration.Inf)
-    //      val insertDepartmentResult = Await.result(DatabaseConnection.db.run(insertDepartment), Duration.Inf)
-    //    val updateResult = Await.result(DatabaseConnection.db.run(update), Duration.Inf)
-    //    val deleteResult = Await.result(DatabaseConnection.db.run(delete), Duration.Inf)
-    //    } finally DatabaseConnection.db.close
-
-
-    //    try {
-    //    val set: DBIOAction[Unit, NoStream, Effect.Schema with Effect.Write] = DBIO.seq(
-    //      (employee.schema ++ department.schema).create,
-    //      employee += (1, "john", 26, 3),
-    //      employee += (2, "sony", 30, 4),
-    //      employee += (3, "peter", 40, 2),
-    //      employee += (4, "marvel", 22, 3),
-    //      employee += (5, "kim", 50, 4),
-    //      employee += (6, "bill", 45, 2),
-    //      employee += (6, "james", 29, 4),
-    //
-    //      department ++= Seq(
-    //        (5, "IT", "hyderabad"),
-    //        (2, "IT", "bangalore"),
-    //        (3, "IT", "chennai"),
-    //        (1, "HR", "hyderabad"),
-    //        (4, "HR", "chennai"),
-    //        (6, "HR", "bangalore")
-    //      )
-    //    )
-    //    val setupFuture: Future[Unit] = DatabaseConnection.db.run(set)
-    //
-    //    println("DepNames:")
-    //    val dep= department.map(p => (p.id, p.depName, p.depLocation))
-    //    val results: Future[Seq[(Int, String, String)]] =DatabaseConnection.db.run(dep.result)
-    //    println(results.map(r=>(r)))
-    //
-    //
-    //    employee.filter(x => x.name === "john")
-    //      .map(p => (p.name, p.age))
-    //      .update(("john", 23))
-    //
-    //    employee.filter(x => x.name === "james").delete
-    //
-    //    println("employee details")
-    //    val emp = employee.map(e => (e.id, e.name, e.age, e.depId))
-    //    DatabaseConnection.db.run(employee.result)
-    //  }finally DatabaseConnection.db.close()
-
-
 }
 
