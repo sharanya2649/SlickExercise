@@ -1,44 +1,27 @@
-package slick
+package slickexample
 
 import slick.jdbc.MySQLProfile.api._
 
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+class Queries extends EmployeeDetails with DepartmentDetails {
+    def insert(emp:EmployeeData)={
+      db.run(employee+=emp)
+    }
 
-class Queries extends EmployeeDetails {
-
-  def insertEmployee(emp: EmployeeData) = {
-    db.run(employeeTable += emp)
+  def getAllEmployee():List[EmployeeData] ={
+    employee.result
   }
 
 
-  def getAllEmployee(): List[EmployeeData] = {
-    db.run(employeeTable.result)
+  def getEmployeeByDepartmentId(id:Int):List[EmployeeData] ={
+    employee.filter(f=>f.depId===id).result
   }
 
-  def getEmployeeByDepartmentId(id: Int): List[EmployeeData] = {
-
+  def getEmployeeNameWithDepartmentName():List[(String,String)] = {
+    db.run((employee join department on (_.id===_.id))
+      .map{case(a,b)=>(a.name,b.depName)}.result)
   }
-
-  //  def update(name: String, modifyName: String, age: Int) = {
-  //    employee.filter(_.name === name)
-  //      .map(p => (p.name, p.age))
-  //      .update((modifyName, age))
-  //  }
-
-  //    def updateSql = {
-  //      sqlu"""
-  //            update EMPLOYEE set NAME='johnn', AGE=38 where NAME='Johnn'
-  //          """
-  //    }
-  //  def delete(deleteName: String) = {
-  ////    employee.join(department).filter { case (e, d) => e.depId === d.id}
-  //    employee.filter(e => e.name === deleteName)
-  //      .delete
-  //  }
-
-  //  def slick(city: String) = {
-  //    val address_ids = department.filter(_.depLocation === city).map(_.id)
-  //    employee.filter(_.id in address_ids).result
-  //  }
-
 
 }
