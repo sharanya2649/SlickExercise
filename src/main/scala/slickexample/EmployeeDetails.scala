@@ -1,0 +1,5 @@
+package slickexample
+
+class EmployeeDetails {
+
+}
