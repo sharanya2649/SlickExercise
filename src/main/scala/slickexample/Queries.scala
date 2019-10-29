@@ -20,7 +20,7 @@ class Queries extends EmployeeDetails with DepartmentDetails {
   }
 
   def getEmployeeNameWithDepartmentName():List[(String,String)] = {
-    db.run((employee join department on (_.id===_.id))
+    db.run((employee join department on (_.depId===_.id))
       .map{case(a,b)=>(a.name,b.depName)}.result)
   }
 
