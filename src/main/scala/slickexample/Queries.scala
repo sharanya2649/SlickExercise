@@ -2,26 +2,23 @@ package slickexample
 
 import slick.jdbc.MySQLProfile.api._
 
-import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-class Queries extends EmployeeDetails with DepartmentDetails {
+
+class Queries extends EmployeeDetails {
+  val dep=new DepartmentDetails
     def insert(emp:EmployeeData)={
       db.run(employee+=emp)
     }
 
-  def getAllEmployee():List[EmployeeData] ={
-    employee.result
+  def getAllEmployee(): Future[List[EmployeeData]] ={
+    db.run(employee.to[List].result)
+  }
+  def getEmployeeByDepartmentId(id:Int):Future[List[EmployeeData]] ={
+    db.run((employee.filter(f=>f.depId===id)).to[List].result)
   }
 
-
-  def getEmployeeByDepartmentId(id:Int):List[EmployeeData] ={
-    employee.filter(f=>f.depId===id).result
+  def getEmployeeNameWithDepartmentName():Future[List[(String,String)]] = {
+    db.run(((employee join dep.department on (_.depId===_.id))
+      .map{case(a,b)=>(a.name,b.depName)}).to[List].result)
   }
-
-  def getEmployeeNameWithDepartmentName():List[(String,String)] = {
-    db.run((employee join department on (_.depId===_.id))
-      .map{case(a,b)=>(a.name,b.depName)}.result)
-  }
-
 }

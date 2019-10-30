@@ -4,9 +4,9 @@ import slick.jdbc.MySQLProfile.api._
 
 class EmployeeDetails extends DatabaseConnection {
 
-  val employee = TableQuery(Employee)
+  val employee = TableQuery[Employee]
 
-  case class Employee(tag: Tag) extends Table[EmployeeData](tag, "DEPARTMENT") {
+  class Employee(tag: Tag) extends Table[EmployeeData](tag, "DEPARTMENT") {
     def * = (id, name, email, depId) <> (EmployeeData.tupled, EmployeeData.unapply)
 
     def id = column[Int]("id")
