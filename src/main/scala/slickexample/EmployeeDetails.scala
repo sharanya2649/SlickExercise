@@ -1,12 +1,14 @@
 package slickexample
 
+import java.sql.Date
+
 import slick.jdbc.MySQLProfile.api._
 
 class EmployeeDetails extends DatabaseConnection {
 
   val employee = TableQuery[Employee]
 
-  class Employee(tag: Tag) extends Table[EmployeeData](tag, "DEPARTMENT") {
+  class Employee(tag: Tag) extends Table[EmployeeData](tag, "Employee_table") {
     def * = (id, name, email, depId) <> (EmployeeData.tupled, EmployeeData.unapply)
 
     def id = column[Int]("id")
@@ -19,4 +21,5 @@ class EmployeeDetails extends DatabaseConnection {
   }
 
   case class EmployeeData(id: Int, name: String, email: String, depId: Int)
+
 }

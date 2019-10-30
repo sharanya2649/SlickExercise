@@ -1,24 +1,37 @@
 package slickexample
 
-import org.scalatest.FunSuite
+import java.sql.Date
 
+import org.scalatest.FunSuite
+import slick.jdbc.MySQLProfile.api._
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 //testing
-class EmployeeDetailsTest extends FunSuite {
+class EmployeeDetailsTest extends FunSuite with DatabaseConnection {
   val emp=new EmployeeDetails
   val query=new Queries
+  val dep=new DepartmentDetails
   test("insert"){
+    Await.result(db.run(DBIO.seq(
+      emp.employee.schema.create
+    )), Duration.Inf)
     val insertInput =Await.result(query.insert(query.EmployeeData(1,"ken","ken@gmail.com",2)),10 seconds)
     assert(insertInput === 1)
+  }
+  test("insert dep"){
+    Await.result(db.run(DBIO.seq(
+      dep.department.schema.create
+    )), Duration.Inf)
+    val insertDep= Await.result(query.insertDepartment((query.departmentObj.DepartmentData(2,"IT","hyderabad"))),10 seconds)
+    assert(insertDep===1)
   }
   test("get employee"){
     val insertInput =Await.result(query.getAllEmployee(),10 seconds)
     assert(insertInput === 1)
   }
   test("get employee by dep_id"){
-    val insertInput =Await.result(query.getEmployeeByDepartmentId(),10 seconds)
+    val insertInput =Await.result(query.getEmployeeByDepartmentId(2),10 seconds)
     assert(insertInput === 1)
   }
   test("get employee dep_name"){
@@ -26,19 +39,4 @@ class EmployeeDetailsTest extends FunSuite {
     assert(insertInput === 1)
   }
 
-//  test("update test") {
-//    val employeeInput = Await.result(DatabaseConnection.db.run(employee.update("Johnn","john",34)), Duration.Inf)
-////    val employeeOutput = Await.result(DatabaseConnection.db.run(employee.updateSql), Duration.Inf)
-//    assert(employeeInput === 1)
-//  }
-//  test("retrieve test"){
-////    val retrieveInput= Await.result(DatabaseConnection.db.run(employee.sql),Duration.Inf)
-//    val retrieveOutput= Await.result(DatabaseConnection.db.run(employee.slick("hyderabad")),Duration.Inf)
-//    assert(Vector(employee.EmployeeData(5,"kim",50,4), employee.EmployeeData(1,"john",34,3))===retrieveOutput)
-//  }
-//  test("delete test"){
-//    val deleteInput = Await.result(DatabaseConnection.db.run(employee.delete("ken")), Duration.Inf)
-////    val deleteOutput = Await.result(DatabaseConnection.db.run(employee.deleteSql), Duration.Inf)
-//    assert(deleteInput===1)
-//  }
 }

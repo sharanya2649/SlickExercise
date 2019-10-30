@@ -5,11 +5,14 @@ import slick.jdbc.MySQLProfile.api._
 import scala.concurrent.Future
 
 class Queries extends EmployeeDetails {
+  val departmentObj=new DepartmentDetails
   val dep=new DepartmentDetails
     def insert(emp:EmployeeData)={
       db.run(employee+=emp)
     }
-/*Added some comments*/
+  def insertDepartment(dep:departmentObj.DepartmentData)={
+    db.run(departmentObj.department+=dep)
+  }
   def getAllEmployee(): Future[List[EmployeeData]] ={
     db.run(employee.to[List].result)
   }
