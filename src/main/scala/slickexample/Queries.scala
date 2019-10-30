@@ -9,7 +9,7 @@ class Queries extends EmployeeDetails {
     def insert(emp:EmployeeData)={
       db.run(employee+=emp)
     }
-
+/*Added some comments*/
   def getAllEmployee(): Future[List[EmployeeData]] ={
     db.run(employee.to[List].result)
   }
