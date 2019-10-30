@@ -1,7 +1,5 @@
 package com.techsophy.employee
 
-import java.sql.Date
-
 import slick.jdbc.MySQLProfile.api._
 
 class EmployeeDetails extends DatabaseConnection {
@@ -16,6 +14,7 @@ class EmployeeDetails extends DatabaseConnection {
     def name = column[String]("name")
 
     def email = column[String]("email")
+
     def depId = column[Int]("dep_id")
 
   }

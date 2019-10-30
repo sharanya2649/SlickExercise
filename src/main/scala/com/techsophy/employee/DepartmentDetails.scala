@@ -18,4 +18,5 @@ class DepartmentDetails extends DatabaseConnection {
   }
 
   case class DepartmentData(id: Int, depName: String, depLocation: String)
+
 }
