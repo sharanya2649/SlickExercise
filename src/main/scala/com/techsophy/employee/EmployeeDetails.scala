@@ -1,4 +1,4 @@
-package slickexample
+package com.techsophy.employee
 
 import java.sql.Date
 
