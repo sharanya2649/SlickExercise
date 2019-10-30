@@ -28,15 +28,15 @@ class EmployeeDetailsTest extends FunSuite with DatabaseConnection {
   }
   test("get employee"){
     val insertInput =Await.result(query.getAllEmployee(),10 seconds)
-    assert(insertInput === 1)
+    assert(insertInput === List(query.EmployeeData(1,"ken","ken@gmail.com",2)))
   }
   test("get employee by dep_id"){
     val insertInput =Await.result(query.getEmployeeByDepartmentId(2),10 seconds)
-    assert(insertInput === 1)
+    assert(insertInput === List(query.EmployeeData(1,"ken","ken@gmail.com",2)))
   }
   test("get employee dep_name"){
     val insertInput =Await.result(query.getEmployeeNameWithDepartmentName(),10 seconds)
-    assert(insertInput === 1)
+    assert(insertInput === List(("ken","IT")))
   }
 
 }
