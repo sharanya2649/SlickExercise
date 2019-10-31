@@ -1,8 +1,7 @@
-package com.techsophy.employee
+package com.techsophy.employee.connection
 
 import java.util.UUID
 
-import com.techsophy.employee.connection.DatabaseConnection
 import com.typesafe.config.ConfigFactory
 import slick.jdbc.H2Profile
 

@@ -1,4 +1,4 @@
-package com.techsophy.employee
+package com.techsophy.employee.table
 
 import java.sql.Timestamp
 import java.util.Date

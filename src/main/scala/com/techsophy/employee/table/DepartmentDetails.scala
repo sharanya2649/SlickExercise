@@ -1,4 +1,4 @@
-package com.techsophy.employee
+package com.techsophy.employee.table
 
 import com.techsophy.employee.connection.{DatabaseConnection, MySQLDBConnector}
 

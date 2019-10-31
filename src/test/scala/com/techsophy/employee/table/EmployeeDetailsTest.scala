@@ -1,5 +1,6 @@
-package com.techsophy.employee
+package com.techsophy.employee.table
 
+import com.techsophy.employee.connection.TestDBConnector
 import org.scalatest.FunSuite
 
 import scala.concurrent.Await
@@ -24,7 +25,6 @@ class EmployeeDetailsTest extends FunSuite with EmployeeQuery with DepartmentQue
     val insertInput = Await.result(getEmployeeByDepartmentId(2), 10 seconds)
     assert(insertInput.length === 1)
   }
-
   test("get employee by dep_id if empty") {
     val insertInput = Await.result(getEmployeeByDepartmentId(4), 10 seconds)
     assert(insertInput.length === 0)
