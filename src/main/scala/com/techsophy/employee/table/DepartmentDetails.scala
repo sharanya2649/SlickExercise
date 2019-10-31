@@ -2,6 +2,8 @@ package com.techsophy.employee.table
 
 import com.techsophy.employee.connection.{DatabaseConnection, MySQLDBConnector}
 
+import scala.concurrent.Future
+
 trait DepartmentQueries extends DepartmentDetails {
 
   import driver.api._
@@ -10,9 +12,21 @@ trait DepartmentQueries extends DepartmentDetails {
     db.run(department += dep)
   }
 
+  def updateDepartment(id: Int, modifyDepName: String) = {
+    db.run(department.filter(_.id === id)
+      .map(p => (p.depName))
+      .update((modifyDepName)))
+  }
+  def deleteDepartment(id: Int) = {
+    db.run(department.filter(e => e.id === id)
+      .delete)
+  }
+  def getAllDepartment(): Future[List[DepartmentData]] = {
+    db.run(department.to[List].result)
+  }
 }
 
-trait DepartmentDetails extends DatabaseConnection {
+trait DepartmentDetails extends DatabaseConnection with EmployeeDetails {
 
   import driver.api._
 
@@ -26,6 +40,8 @@ trait DepartmentDetails extends DatabaseConnection {
     def depName = column[String]("dep_name")
 
     def depLocation = column[String]("dep_location")
+
+    def emp = foreignKey("emp",id,employee)(_.id)
 
   }
 

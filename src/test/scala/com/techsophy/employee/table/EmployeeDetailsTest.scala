@@ -12,10 +12,13 @@ class EmployeeDetailsTest extends FunSuite with EmployeeQuery with DepartmentQue
     val insertInput = Await.result(insert(EmployeeData("ken", "ken@gmail.com", 2)), 10 seconds)
     assert(insertInput === 1)
   }
-
+  test("update") {
+    val insertInput = Await.result(update("sony","sony10@gmail.com"), 10 seconds)
+    assert(insertInput === 1)
+  }
   test("get employees") {
     val res = Await.result(getAllEmployee(), 10 seconds)
-    assert(res.length === 3)
+    assert(res.length === 4)
   }
   test("insert dep") {
     val insertDep = Await.result(insertDepartment((DepartmentData(2, "IT", "hyderabad"))), 10 seconds)
@@ -32,6 +35,10 @@ class EmployeeDetailsTest extends FunSuite with EmployeeQuery with DepartmentQue
   test("get employee dep_name") {
     val insertInput = Await.result(getEmployeeNameWithDepartmentName(), 10 seconds)
     assert(insertInput === List(("peter","HR")))
+  }
+  test("delete") {
+    val insertInput = Await.result(delete("george"), 10 seconds)
+    assert(insertInput === 1)
   }
 
 }
