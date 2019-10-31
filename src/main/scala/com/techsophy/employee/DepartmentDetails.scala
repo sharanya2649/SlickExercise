@@ -1,12 +1,24 @@
 package com.techsophy.employee
 
-import slick.jdbc.MySQLProfile.api._
+import com.techsophy.employee.connection.{DatabaseConnection, MySQLDBConnector}
 
-class DepartmentDetails extends DatabaseConnection {
+trait DepartmentQueries extends DepartmentDetails {
+
+  import driver.api._
+
+  def insertDepartment(dep: DepartmentData) = {
+    db.run(department += dep)
+  }
+
+}
+
+trait DepartmentDetails extends DatabaseConnection {
+
+  import driver.api._
 
   val department = TableQuery[Department]
 
-  class Department(tag: Tag) extends Table[DepartmentData](tag, "DEPARTMENT") {
+  class Department(tag: Tag) extends Table[DepartmentData](tag, "department") {
     def * = (id, depName, depLocation) <> (DepartmentData.tupled, DepartmentData.unapply)
 
     def id = column[Int]("id")
@@ -17,6 +29,8 @@ class DepartmentDetails extends DatabaseConnection {
 
   }
 
-  case class DepartmentData(id: Int, depName: String, depLocation: String)
-
 }
+
+case class DepartmentData(id: Int, depName: String, depLocation: String)
+
+object DepartmentQueriesObj extends DepartmentQueries with MySQLDBConnector
