@@ -38,6 +38,7 @@ trait EmployeeQuery extends EmployeeDetails with DepartmentDetails {
     db.run(((employee join department on (_.depId === _.id))
       .map { case (a, b) => (a.name, b.depName) }).to[List].result)
   }
+
 }
 
 trait EmployeeDetails extends DatabaseConnection {

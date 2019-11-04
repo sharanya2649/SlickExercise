@@ -41,7 +41,7 @@ trait DepartmentDetails extends DatabaseConnection with EmployeeDetails {
 
     def depLocation = column[String]("dep_location")
 
-    def emp = foreignKey("emp",id,employee)(_.id)
+//    def emp = foreignKey("emp",id,employee)(_.id)
 
   }
 

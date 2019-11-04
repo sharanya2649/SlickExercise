@@ -1,1 +1,1 @@
-["sbt.Task[scala.collection.Seq[scala.Tuple2[java.nio.file.Path, sbt.nio.FileStamp]]]",{"hashes":[["/home/sharanya/SlickExercise/build.sbt","c5e0848aadb269828fe11d9b38dcc1630649eb0a"]],"lastModifiedTimes":[]}]
+["sbt.Task[scala.collection.Seq[scala.Tuple2[java.nio.file.Path, sbt.nio.FileStamp]]]",{"hashes":[["/home/sharanya/SlickExercise/build.sbt","c5e0848aadb269828fe11d9b38dcc1630649eb0a"],["/home/sharanya/SlickExercise/project/plugin.sbt","1600f350c4dffe9a52e8c068fe09089979ef7fee"]],"lastModifiedTimes":[]}]
